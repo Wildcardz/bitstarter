@@ -66,13 +66,9 @@ var checkUrl = function(url, checksfile) {
 	     util.puts('Error: ' + result.message);
 	     this.retry(5000);		// try again in 5 sec
 	} else {
-	     //util.puts(result);
-	     //var buf = new Buffer(JSON.parse(result));
-	     //var buf = JSON.parse(result);
 	     $ = cheerio.load(result);
 	    
  
-	     //var checks = rcheck.toString();
              var checks = loadChecks(checksfile).sort();
 	     var out = {};
     	     for(var ii in checks) {
