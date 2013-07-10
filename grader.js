@@ -70,7 +70,7 @@ var checkHtmlFile = function(htmlfile, checksfile) {
     return out;
 };
 
-var checkUrl = function(url) {
+var checkUrl = function(url, checksfile) {
     console.log('check URL: ' + url);
     rest.get(url).on('complete', function(result) {
         if (result instanceof Error) {
@@ -79,20 +79,23 @@ var checkUrl = function(url) {
 	} else {
 	     //util.puts(result);
 	     //var buf = new Buffer(JSON.parse(result));
-	     var buf = JSON.parse(result);
+	     //var buf = JSON.parse(result);
+	     $ = cheerio.load(result);
 	    
-/* 
-	     var checks = rcheck.toString();
+ 
+	     //var checks = rcheck.toString();
+             var checks = loadChecks(checksfile).sort();
 	     var out = {};
     	     for(var ii in checks) {
                   var present = $(checks[ii]).length > 0;
                   out[checks[ii]] = present;
              }
-*/
+
 		
 	console.log('TRUE');
         //console.log('Printing ... ' + buf);
-    	var checkJson = buf.toString();
+    	//var checkJson = buf.toString();
+    	var checkJson = out;
        console.log('Printing ... ' );
     	var outJson = JSON.stringify(checkJson, null, 4);
     	console.log(outJson);
@@ -122,7 +125,7 @@ if(require.main == module) {
         var outJson = JSON.stringify(checkJson, null, 4);
         console.log(outJson);
     } else {
-         var checkJson = checkUrl(program.url); 
+         var checkJson = checkUrl(program.url, program.checks); 
          console.log('CHKSON: ' + checkJson); 
     }
     //console.log('CHKSON1: ' + checkJson1);
