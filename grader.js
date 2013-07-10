@@ -37,6 +37,7 @@ var assertFileExists = function(infile) {
         console.log("%s does not exist. Exiting.", instr);
         process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code
     }
+    console.log("Infile: " + instr);
     return instr;
 };
 
@@ -60,12 +61,28 @@ var checkHtmlFile = function(htmlfile, checksfile) {
 };
 
 var checkUrl = function(url) {
+    console.log('check URL: ' + url);
     rest.get(url).on('complete', function(result) {
         if (result instanceof Error) {
 	     util.puts('Error: ' + result.message);
 	     this.retry(5000);		// try again in 5 sec
 	} else {
-	     util.puts(result);
+	     //util.puts(result);
+	     var buf = new Buffer(result);
+	    
+/* 
+	     var checks = rcheck.toString();
+	     var out = {};
+    	     for(var ii in checks) {
+                  var present = $(checks[ii]).length > 0;
+                  out[checks[ii]] = present;
+             }
+*/
+		
+	console.log('TRUE');
+        //console.log('Printing ... ' + buf);
+        console.log('Printing ... ' );
+	     return result[0].message;
 	}
     });
 };
@@ -80,9 +97,16 @@ if(require.main == module) {
     program
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
-        .option('-u, --url <url>', 'Path to url', clone(checkUrl), URL_DEFAULT)
+        .option('-u, --url <url>', 'Path to url') //, clone(checkUrl), URL_DEFAULT)
         .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
+    console.log('PRG: ' + program);
+    console.log('FILE: ' + program.file);
+    console.log('CHECK: ' + program.checks);
+    console.log('URL: ' + program.url);
+    var checkJson1 = checkHtmlFile(program.file, program.checks); 
+    var checkJson = checkUrl(program.url); 
+    console.log('CHKSON: ' + checkJson); 
+    console.log('CHKSON1: ' + checkJson1);
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
 } else {
